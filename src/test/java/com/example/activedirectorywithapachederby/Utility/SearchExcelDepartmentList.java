@@ -46,6 +46,55 @@ public class SearchExcelDepartmentList {
         }
     }
 
+    /*public String getDeptLocationCodeByDeptNameAlternative(String deptName, File excelFile) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(excelFile);
+
+            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            int lastRow = sheet.getLastRowNum();
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            rowIterator.next();
+
+            //boolean done = false;
+
+            while (rowIterator.hasNext()) {
+                Row nextRow = rowIterator.next();
+
+                Cell cell = nextRow.getCell(1);
+
+                String cellContents;
+
+                if(cell != null){
+                    switch(cell.getCellType()){
+                        case STRING:
+                            cellContents = nextRow.getCell(1).getStringCellValue();
+                            break;
+                        case NUMERIC:
+
+                    }
+                }
+
+
+
+                if (cellContents.equals(deptName)) {
+                    return nextRow.getCell(2).getStringCellValue();
+                }
+
+            }
+
+            workbook.close();
+            return "0";
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+
     public String getMailCodeByDeptName(String deptName, File excelFile) {
         try {
             FileInputStream fileInputStream = new FileInputStream(excelFile);

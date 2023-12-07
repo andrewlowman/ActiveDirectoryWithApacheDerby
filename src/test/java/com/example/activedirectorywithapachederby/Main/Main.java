@@ -1,10 +1,7 @@
 package com.example.activedirectorywithapachederby.Main;
 
 import com.example.activedirectorywithapachederby.Selenium.FillForm;
-import com.example.activedirectorywithapachederby.Utility.DialogPopUp;
-import com.example.activedirectorywithapachederby.Utility.LoadDepartmentList;
-import com.example.activedirectorywithapachederby.Utility.LoadExcel;
-import com.example.activedirectorywithapachederby.Utility.SearchExcelDepartmentList;
+import com.example.activedirectorywithapachederby.Utility.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,10 +32,14 @@ public class Main extends JFrame {
     private LoadDepartmentList loadDepartmentList = new LoadDepartmentList();
     private SearchExcelDepartmentList searchExcelDepartmentList = new SearchExcelDepartmentList();
 
+    private String[][] data;
+
 
     public Main(){
         FillForm fillForm = new FillForm();
         DialogPopUp dialogPopUp = new DialogPopUp();
+        SearchGoogleSheet searchGoogleSheet = new SearchGoogleSheet();
+
 
         JFrame frame = new JFrame();
         frame.setContentPane(mainPanel);
@@ -62,13 +63,20 @@ public class Main extends JFrame {
         deptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser jFileChooser = new JFileChooser("C:\\Users\\low85\\Desktop");
+                /*JFileChooser jFileChooser = new JFileChooser("C:\\Users\\low85\\Desktop");
 
                 int jFile = jFileChooser.showOpenDialog(Main.this);
 
                 if(jFile == JFileChooser.APPROVE_OPTION){
                    deptExcel = jFileChooser.getSelectedFile();
 
+                }*/
+
+                try{
+                    data = searchGoogleSheet.getDataFromSheet();
+                    dialogPopUp.showDialog(Main.this, "Excel file loaded");
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -123,15 +131,21 @@ public class Main extends JFrame {
                     deptName = deptName.replace("'","");
                 }
 
-                String locCode = searchExcelDepartmentList.getDeptLocationCodeByDeptName(deptName,deptExcel);
-                String mailCode = searchExcelDepartmentList.getMailCodeByDeptName(deptName, deptExcel);
+                String locCode = searchGoogleSheet.getLocationCodeFromDeptNameFromGoogleSheet(data,deptName);
+                String mailCode = searchGoogleSheet.getMailCodeFromDeptNameFromGoogleSheet(data, deptName);
+                //String locCode = searchExcelDepartmentList.getDeptLocationCodeByDeptName(deptName,deptExcel);
+                //String mailCode = searchExcelDepartmentList.getMailCodeByDeptName(deptName, deptExcel);
 
                 //if no results from dept search add to no results counter
                 if(locCode.equals("0")||mailCode.equals("0")||mailCode.equals("VARIOUS MAIL CODE")){
                     noResultCtr++;
 
-                    locCode = searchExcelDepartmentList.getLocationCodeByDeptCode(deptCode,deptExcel);
-                    mailCode = searchExcelDepartmentList.getMailCodeByDeptCode(deptCode, deptExcel);
+                    //System.out.println("locCode before " + locCode);
+
+                    locCode = searchGoogleSheet.getLocCodeFromDepartmentCodeFromGoogleSheet(data, deptCode);
+                    mailCode = searchGoogleSheet.getMailCodeFromDepartmentCodeFromGoogleSheet(data, deptCode);
+                    //locCode = searchExcelDepartmentList.getLocationCodeByDeptCode(deptCode,deptExcel);
+                   // mailCode = searchExcelDepartmentList.getMailCodeByDeptCode(deptCode, deptExcel);
 
                     if(locCode.equals("0")||mailCode.equals("0")||mailCode.equals("VARIOUS MAIL CODE")){
                         noResultCtr++;
